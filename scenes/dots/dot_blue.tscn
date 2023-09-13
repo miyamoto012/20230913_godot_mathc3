@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4tx1177ey6ao"]
+
+[ext_resource type="PackedScene" uid="uid://ccl2afr3f5uym" path="res://scenes/dot.tscn" id="1_wob5k"]
+[ext_resource type="Texture2D" uid="uid://ca2tkvnwggp5r" path="res://assets/dots/blue.svg" id="2_4kmqh"]
+
+[node name="DotBlue" instance=ExtResource("1_wob5k")]
+_color = "blue"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_4kmqh")

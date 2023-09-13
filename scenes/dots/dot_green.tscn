@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://kxfh5bitsy1n"]
+
+[ext_resource type="PackedScene" uid="uid://ccl2afr3f5uym" path="res://scenes/dot.tscn" id="1_wvrg8"]
+[ext_resource type="Texture2D" uid="uid://bbxlaa40nhuhn" path="res://assets/dots/green.svg" id="2_iuewk"]
+
+[node name="DotGreen" instance=ExtResource("1_wvrg8")]
+_color = "green"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_iuewk")

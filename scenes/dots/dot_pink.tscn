@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://byuy3onm5nr8d"]
+
+[ext_resource type="PackedScene" uid="uid://ccl2afr3f5uym" path="res://scenes/dot.tscn" id="1_m5cv6"]
+[ext_resource type="Texture2D" uid="uid://bmjrky5wfgnfs" path="res://assets/dots/pink.svg" id="2_ucn3o"]
+
+[node name="DotPink" instance=ExtResource("1_m5cv6")]
+_color = "pink"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_ucn3o")
