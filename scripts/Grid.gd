@@ -5,6 +5,12 @@ enum State {
 	WAITING_INPUT
 }
 
+enum Mouse_Input{
+	PRESS,
+	RELEASE,
+	NONE,
+}
+
 #最大列数
 const WIDTH: int = 7
 #最大行数
@@ -45,11 +51,11 @@ var swap_grid := Vector2i(0,0)
 var swap_direction := Vector2i(0,0)
 
 #左マウスボタンを押下したグリッド座標
-var pressed_grid := Vector2i(0,0)
+var _pressed_grid := Vector2i(0,0)
 #左マウスボタンを離したグリッド座標
-var released_grid := Vector2i(0,0)
+var _released_grid := Vector2i(0,0)
 #左マウスボタンが押下されている
-var is_press: bool = false
+var _is_press: bool = false
 
 
 @onready var x_start = ((get_window().size.x / 2.0) - ((WIDTH/2.0) * offset ) + (offset / 2))
@@ -146,23 +152,37 @@ func is_in_grid(grid_position: Vector2i)->bool:
 		if grid_position.y >= 0 && grid_position.y < HEIGHT:
 			return true
 	return false
+	
+	
+func _process(_delta)->void:
+	if state == State.WAITING_INPUT:
+		if touch_input() != Mouse_Input.RELEASE:
+			return
+		
+		touch_difference(_pressed_grid, _released_grid)
+		
 
-
-func touch_input()->void:
+func touch_input()->Mouse_Input:
+	var mouse_position = get_global_mouse_position()
+	var mouse_grid_position = pixel_to_grid(mouse_position.x, mouse_position.y)
+	
 	if Input.is_action_just_pressed("ui_touch"):
-		if is_in_grid(pixel_to_grid(get_global_mouse_position().x,get_global_mouse_position().y)):
-			pressed_grid = pixel_to_grid(get_global_mouse_position().x,get_global_mouse_position().y)
-			is_press = true
+		if is_in_grid(mouse_grid_position):
+			_pressed_grid = mouse_grid_position
+			_is_press = true
+			return Mouse_Input.PRESS
 	if Input.is_action_just_released("ui_touch"):
-		if is_in_grid(pixel_to_grid(get_global_mouse_position().x,get_global_mouse_position().y)) && is_press:
-			released_grid = pixel_to_grid(get_global_mouse_position().x,get_global_mouse_position().y )
-			is_press = false
-			touch_difference(pressed_grid, released_grid)
+		if is_in_grid(mouse_grid_position) && _is_press:
+			_released_grid = mouse_grid_position
+			_is_press = false
+			return Mouse_Input.RELEASE
+	return Mouse_Input.NONE
 
 
 func swap_dots(column: int, row: int, direction: Vector2i)->void:
 	var first_dot: Dot = all_dots[column][row]
 	var other_dot: Dot = all_dots[column + direction.x][row + direction.y]
+	
 	if first_dot != null && other_dot != null:
 		store_info(first_dot, other_dot, Vector2i(column, row), direction)
 		state = State.DISPLAY_UPDATE
@@ -201,11 +221,6 @@ func touch_difference(grid_1: Vector2i, grid_2: Vector2i)->void:
 		elif difference.y < 0:
 			swap_dots(grid_1.x, grid_1.y, Vector2i(0, -1))
 			find_matches()
-
-
-func _process(_delta)->void:
-	if state == State.WAITING_INPUT:
-		touch_input()
 
 	
 func find_matches()->void:
