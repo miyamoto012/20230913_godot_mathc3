@@ -159,7 +159,12 @@ func _process(_delta)->void:
 		if touch_input() != Mouse_Input.RELEASE:
 			return
 		
-		touch_difference(_pressed_grid, _released_grid)
+		var direction = touch_difference(_pressed_grid, _released_grid)
+		if direction == Vector2i.ZERO:
+			return
+		
+		swap_dots(_pressed_grid.x, _pressed_grid.y, direction)
+		find_matches()
 		
 
 func touch_input()->Mouse_Input:
@@ -205,22 +210,27 @@ func swap_back()->void:
 	state = State.WAITING_INPUT
 
 
-func touch_difference(grid_1: Vector2i, grid_2: Vector2i)->void:
+func touch_difference(grid_1: Vector2i, grid_2: Vector2i)->Vector2i:
 	var difference := grid_2 - grid_1
 	if abs(difference.x) > abs(difference.y):
 		if difference.x > 0:
+			return Vector2i(1, 0)
 			swap_dots(grid_1.x, grid_1.y, Vector2i(1, 0))
 			find_matches()
 		elif difference.x < 0:
+			return Vector2i(-1, 0)
 			swap_dots(grid_1.x, grid_1.y, Vector2i(-1, 0))
 			find_matches()
 	elif abs(difference.y) > abs(difference.x):
 		if difference.y > 0:
+			return Vector2i(0, 1)
 			swap_dots(grid_1.x, grid_1.y, Vector2i(0, 1))
 			find_matches()
 		elif difference.y < 0:
+			return Vector2i(0, -1)
 			swap_dots(grid_1.x, grid_1.y, Vector2i(0, -1))
 			find_matches()
+	return Vector2i.ZERO
 
 	
 func find_matches()->void:
