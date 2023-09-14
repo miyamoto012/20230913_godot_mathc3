@@ -164,8 +164,14 @@ func _process(_delta)->void:
 			return
 		
 		swap_dots(_pressed_grid.x, _pressed_grid.y, direction)
+		
 		find_matches()
 		
+		await get_tree().create_timer(0.2).timeout
+		
+		destroy_matches()
+		
+
 
 func touch_input()->Mouse_Input:
 	var mouse_position = get_global_mouse_position()
@@ -215,21 +221,13 @@ func touch_difference(grid_1: Vector2i, grid_2: Vector2i)->Vector2i:
 	if abs(difference.x) > abs(difference.y):
 		if difference.x > 0:
 			return Vector2i(1, 0)
-			swap_dots(grid_1.x, grid_1.y, Vector2i(1, 0))
-			find_matches()
 		elif difference.x < 0:
 			return Vector2i(-1, 0)
-			swap_dots(grid_1.x, grid_1.y, Vector2i(-1, 0))
-			find_matches()
 	elif abs(difference.y) > abs(difference.x):
 		if difference.y > 0:
 			return Vector2i(0, 1)
-			swap_dots(grid_1.x, grid_1.y, Vector2i(0, 1))
-			find_matches()
 		elif difference.y < 0:
 			return Vector2i(0, -1)
-			swap_dots(grid_1.x, grid_1.y, Vector2i(0, -1))
-			find_matches()
 	return Vector2i.ZERO
 
 	
@@ -250,7 +248,6 @@ func find_matches()->void:
 							match_and_dim(all_dots[i_c][i_r - 1])
 							match_and_dim(all_dots[i_c][i_r])
 							match_and_dim(all_dots[i_c][i_r + 1])
-	destroy_timer.start()
 
 
 func match_and_dim(dot: Dot)->void:
